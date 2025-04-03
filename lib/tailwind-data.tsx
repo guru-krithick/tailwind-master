@@ -1963,6 +1963,19 @@ export const categories: TailwindCategory[] = [
       },
     ],
   },
-]
+];
+
+export function getAllCategories(): TailwindCategory[] {
+  return categories;
+}
+
+export function getCategoryById(id: string): TailwindCategory | undefined {
+  return categories.find(category => category.id === id);
+}
+
+export function getFunctionById(categoryId: string, functionId: string): TailwindFunction | undefined {
+  const category = getCategoryById(categoryId);
+  return category?.functions.find(func => func.id === functionId);
+}
 
 

@@ -1,17 +1,18 @@
-// components/live-preview.tsx - Fixed any type
-// components/live-preview.tsx
+// components/live-preview.tsx - Added cssCode prop
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 
 interface LivePreviewProps {
   code: string;
+  cssCode?: string; // Added the cssCode prop
   deviceView?: "responsive" | "phone" | "tablet" | "laptop";
   showGrid?: boolean;
 }
 
 export function LivePreview({ 
   code, 
+  cssCode,
   deviceView = "responsive",
   showGrid = true
 }: LivePreviewProps) {
@@ -35,7 +36,7 @@ export function LivePreview({
         }
 
         // Prepare the content with Tailwind v4
-        const htmlContent = `${code}`;
+        const htmlContent = code;
         
         // Use document.write for immediate rendering
         iframeDoc.open();

@@ -8,26 +8,26 @@ import { type ThemeProviderProps } from "next-themes";
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   // Apply theme changes to CSS variables on theme change
   const updateThemeVars = React.useCallback((theme: string) => {
-    // With Tailwind v4, we don't need to manipulate classes for theming
-    // The CSS variables in :root and media query handle light/dark modes
+    // Update data-theme attribute for better CSS targeting
     document.documentElement.setAttribute('data-theme', theme);
   }, []);
 
   React.useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = props.defaultTheme || (prefersDark ? 'dark' : 'light');
+    const initialTheme = props.defaultTheme || 'dark'; // Default to dark if not specified
     updateThemeVars(initialTheme);
 
-    const handleThemeChange = (e: MediaQueryListEvent) => {
-      updateThemeVars(e.matches ? 'dark' : 'light');
-    };
+    // Listen for theme changes from the ThemesProvider
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains('dark');
+      updateThemeVars(isDark ? 'dark' : 'light');
+    });
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    mediaQuery.addEventListener('change', handleThemeChange);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
 
-    return () => {
-      mediaQuery.removeEventListener('change', handleThemeChange);
-    };
+    return () => observer.disconnect();
   }, [props.defaultTheme, updateThemeVars]);
 
   return (

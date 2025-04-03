@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { CodeEditor } from "./code-editor";
 import { LivePreview } from "./live-preview";
 import { Button } from "./ui/button";
+import { useTheme } from "next-themes"; // Import useTheme
 import { 
   Copy, 
   Check, 
@@ -41,36 +42,57 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
   // State
   const [htmlCode, setHtmlCode] = useState(initialCode.html);
   const [cssCode, setCssCode] = useState(initialCode.css);
-  const [compiledCode, setCompiledCode] = useState(combineCode(initialCode.html, initialCode.css));
+  const [compiledCode, setCompiledCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [activeTab, setActiveTab] = useState("html");
   const [deviceView, setDeviceView] = useState<DeviceView>("responsive");
   const [showGrid, setShowGrid] = useState(true);
   const [fullScreenMode, setFullScreenMode] = useState<"code" | "preview" | null>(null);
+  const { theme } = useTheme(); // Get current theme
   
   // Combine HTML and CSS into a complete document
   function combineCode(html: string, css: string): string {
     return `<!DOCTYPE html>
-<html>
+<html class="${theme || 'dark'}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com?v=4.0.0"></script>
-  <style>${css}</style>
+  <style>
+    /* Base theme tokens for both light and dark modes */
+    :root {
+      --radius: 0.625rem;
+    }
+    
+    /* Light mode theme */
+    html {
+      background-color: white;
+      color: #111827;
+    }
+    
+    /* Dark mode theme */
+    html.dark {
+      background-color: #111827;
+      color: #f9fafb;
+    }
+    
+    /* Add any additional theme-related styles */
+    ${css}
+  </style>
 </head>
-<body>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
   ${html}
 </body>
 </html>`;
   }
   
-  // Update preview when code changes
+  // Update preview when code or theme changes
   useEffect(() => {
-    if (autoRefresh) {
+    if (autoRefresh || !compiledCode) {
       setCompiledCode(combineCode(htmlCode, cssCode));
     }
-  }, [htmlCode, cssCode, autoRefresh]);
+  }, [htmlCode, cssCode, autoRefresh, theme]); // Add theme as dependency
   
   // Handle manual refresh
   const handleRefresh = () => {
@@ -301,11 +323,11 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-200">Color Examples:</h3>
+                  <h3 className="font-medium text-gray-200">Dark Mode Support:</h3>
                   <ul className="list-disc list-inside pl-2 text-gray-400">
-                    <li><code className="bg-gray-800 px-1 rounded text-blue-400">bg-blue-500</code> - Blue background (new OKLCH colors)</li>
-                    <li><code className="bg-gray-800 px-1 rounded text-blue-400">text-primary</code> - Primary text color</li>
-                    <li><code className="bg-gray-800 px-1 rounded text-blue-400">border-[#hex]</code> - Custom border color</li>
+                    <li><code className="bg-gray-800 px-1 rounded text-blue-400">dark:</code> - Prefix for dark mode styling</li>
+                    <li><code className="bg-gray-800 px-1 rounded text-blue-400">dark:bg-gray-900</code> - Dark background</li>
+                    <li><code className="bg-gray-800 px-1 rounded text-blue-400">dark:text-white</code> - Light text for dark mode</li>
                   </ul>
                 </div>
                 <div className="border-t border-gray-800 pt-3">
@@ -451,6 +473,7 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
                 code={compiledCode}
                 deviceView={deviceView}
                 showGrid={showGrid}
+                theme={theme || "dark"} // Pass the current theme
               />
             </div>
           </div>

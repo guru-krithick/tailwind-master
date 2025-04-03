@@ -8,18 +8,21 @@ interface LivePreviewProps {
   cssCode?: string;
   deviceView?: "responsive" | "phone" | "laptop";
   showGrid?: boolean;
+  theme?: string; // Add theme prop
 }
 
 export function LivePreview({ 
   code, 
+  cssCode,
   deviceView = "responsive",
-  showGrid = true
+  showGrid = true,
+  theme = "dark" // Default to dark theme
 }: LivePreviewProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
-  // Update preview immediately when code changes
+  // Update preview immediately when code or theme changes
   useEffect(() => {
     const updatePreview = () => {
       if (!iframeRef.current) return;
@@ -34,9 +37,56 @@ export function LivePreview({
           throw new Error("Cannot access iframe document");
         }
 
+        // Extract the HTML content from the full document
+        let htmlContent = code;
+        
+        // If the code appears to be a complete HTML document, extract just the body content
+        if (code.includes('<!DOCTYPE html>') || code.includes('<html')) {
+          // Create a template element to parse the HTML
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(code, 'text/html');
+          
+          // Extract just the body content
+          htmlContent = doc.body.innerHTML;
+        }
+
+        // Create a full HTML document with the current theme
+        const fullHtml = `<!DOCTYPE html>
+<html class="${theme}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com?v=4.0.0"></script>
+  <style>
+    /* Base theme tokens for both light and dark modes */
+    :root {
+      --radius: 0.625rem;
+    }
+    
+    /* Light mode theme */
+    html {
+      background-color: white;
+      color: #111827;
+    }
+    
+    /* Dark mode theme */
+    html.dark {
+      background-color: #111827;
+      color: #f9fafb;
+    }
+    
+    /* Additional styles */
+    ${cssCode || ''}
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+  ${htmlContent}
+</body>
+</html>`;
+
         // Use document.write for immediate rendering
         iframeDoc.open();
-        iframeDoc.write(code);
+        iframeDoc.write(fullHtml);
         iframeDoc.close();
         
         // Reset error state if successful
@@ -56,7 +106,7 @@ export function LivePreview({
 
     // Create a new iframe for each update to avoid caching issues
     updatePreview();
-  }, [code, deviceView, showGrid]);
+  }, [code, cssCode, deviceView, showGrid, theme]); // Include theme in dependencies
 
   return (
     <div className="w-full h-full relative">

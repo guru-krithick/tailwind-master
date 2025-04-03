@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { CodeEditor } from "./code-editor";
 import { LivePreview } from "./live-preview";
 import { Button } from "./ui/button";
+import { useTheme } from "next-themes"; // Import useTheme
 import { 
   Copy, 
   Check, 
@@ -22,11 +23,6 @@ interface PlaygroundProps {
   initialCode: string;
   initialCss?: string;
 }
-export interface LivePreviewProps {
-  code: string;
-  cssCode?: string; // Ensure cssCode is defined here
-  showGrid?: boolean;
-}
 
 export function Playground({ initialCode, initialCss = "" }: PlaygroundProps) {
   // State for code and editor
@@ -36,6 +32,7 @@ export function Playground({ initialCode, initialCss = "" }: PlaygroundProps) {
   const [copied, setCopied] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [showTips, setShowTips] = useState(true);
+  const { theme } = useTheme(); // Get current theme
   
   // References for calculating heights
   const containerRef = useRef<HTMLDivElement>(null);
@@ -70,7 +67,7 @@ export function Playground({ initialCode, initialCss = "" }: PlaygroundProps) {
   // Copy to clipboard
   const copyToClipboard = () => {
     const fullCode = `<!DOCTYPE html>
-<html>
+<html class="${theme || 'dark'}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,7 +76,7 @@ export function Playground({ initialCode, initialCss = "" }: PlaygroundProps) {
 ${cssCode}
   </style>
 </head>
-<body>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
   ${htmlCode}
 </body>
 </html>`;
@@ -92,7 +89,7 @@ ${cssCode}
   // Export as HTML file
   const downloadHTML = () => {
     const fullCode = `<!DOCTYPE html>
-<html>
+<html class="${theme || 'dark'}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,7 +98,7 @@ ${cssCode}
 ${cssCode}
   </style>
 </head>
-<body>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
   ${htmlCode}
 </body>
 </html>`;
@@ -288,6 +285,7 @@ ${cssCode}
               code={previewHtml} 
               cssCode={previewCss}
               showGrid={true}
+              theme={theme || "dark"} // Pass the current theme
             />
           </div>
         </div>

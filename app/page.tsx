@@ -7,10 +7,6 @@ import { getAllCategories } from "@/lib/tailwind-data";
 import CategoryCard from "@/components/category-card";
 import { SearchBar } from "@/components/search-bar";
 import { Header } from "@/components/header";
-import { 
-  Tabs, 
-  TabsList, 
-  TabsTrigger} from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Code, Zap, Star, History } from "lucide-react";
 import Link from "next/link";
@@ -19,7 +15,7 @@ export default function Home() {
   const categories = getAllCategories();
   const [searchQuery, setSearchQuery] = useState("");
   const [recentCategories, setRecentCategories] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab] = useState("all");
 
   // Load recent categories from localStorage
   useEffect(() => {

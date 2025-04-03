@@ -14,7 +14,6 @@ import {
   Code,
   FileType,
   Play,
-  HelpCircle,
   LayoutGrid,
   Smartphone,
   Laptop,

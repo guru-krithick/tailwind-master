@@ -4,7 +4,6 @@
 import { useState, useEffect } from "react";
 import { CodeEditor } from "./code-editor";
 import { LivePreview } from "./live-preview";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Button } from "./ui/button";
 import { 
   Copy, 

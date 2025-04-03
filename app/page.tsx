@@ -9,9 +9,7 @@ import { Header } from "@/components/header";
 import { 
   Tabs, 
   TabsList, 
-  TabsTrigger, 
-  TabsContent 
-} from "@/components/ui/tabs";
+  TabsTrigger} from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Code, Zap, Star, History } from "lucide-react";
 import Link from "next/link";

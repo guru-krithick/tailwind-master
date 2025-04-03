@@ -103,20 +103,6 @@ export default function Home() {
             placeholder="Search Tailwind utilities..." 
             className="max-w-2xl mx-auto mb-8"
           />
-          
-          <Tabs 
-            defaultValue="all" 
-            value={activeTab} 
-            onValueChange={setActiveTab}
-            className="max-w-2xl mx-auto"
-          >
-            <TabsList className="grid grid-cols-4 mb-8">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="layout">Layout</TabsTrigger>
-              <TabsTrigger value="styling">Styling</TabsTrigger>
-              <TabsTrigger value="recent">Recent</TabsTrigger>
-            </TabsList>
-          </Tabs>
         </div>
 
         {/* Recent Categories Section (conditionally rendered) */}
@@ -196,43 +182,6 @@ export default function Home() {
               <Button variant="outline" onClick={() => setSearchQuery("")}>Clear Search</Button>
             </div>
           )}
-        </div>
-
-        {/* Tailwind Features Section */}
-        <div className="mt-16 mb-8 border-t pt-12">
-          <h2 className="text-2xl font-bold mb-6 text-center">New in Tailwind CSS v4</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-lg border bg-card">
-              <div className="bg-primary/10 p-3 rounded-lg inline-block mb-3">
-                <Zap className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">OKLCH Colors</h3>
-              <p className="text-muted-foreground">
-                Type-safe OKLCH color system for better color science and more accurate color manipulation.
-              </p>
-            </div>
-            
-            <div className="p-6 rounded-lg border bg-card">
-              <div className="bg-purple-500/10 p-3 rounded-lg inline-block mb-3">
-                <Code className="h-6 w-6 text-purple-500" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Custom Variants</h3>
-              <p className="text-muted-foreground">
-                Create your own powerful variants for more flexible and maintainable styling.
-              </p>
-            </div>
-            
-            <div className="p-6 rounded-lg border bg-card">
-              <div className="bg-blue-500/10 p-3 rounded-lg inline-block mb-3">
-                <BookOpen className="h-6 w-6 text-blue-500" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Enhanced Typography</h3>
-              <p className="text-muted-foreground">
-                New text-balance property and improved typographic controls for better readability.
-              </p>
-            </div>
-          </div>
         </div>
       </main>
       

@@ -177,7 +177,7 @@ export function CodeEditor({
     // Register Tailwind v4 completions
     if (language === 'html') {
       monaco.languages.registerCompletionItemProvider('html', {
-        provideCompletionItems: (model, position) => {
+        provideCompletionItems: (model: { getWordUntilPosition: (arg0: any) => any; }, position: { lineNumber: any; }) => {
           const word = model.getWordUntilPosition(position);
           const range = {
             startLineNumber: position.lineNumber,
@@ -199,7 +199,7 @@ export function CodeEditor({
       });
     } else if (language === 'css') {
       monaco.languages.registerCompletionItemProvider('css', {
-        provideCompletionItems: (model, position) => {
+        provideCompletionItems: (model: { getWordUntilPosition: (arg0: any) => any; }, position: { lineNumber: any; }) => {
           const word = model.getWordUntilPosition(position);
           const range = {
             startLineNumber: position.lineNumber,

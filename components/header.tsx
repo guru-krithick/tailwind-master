@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 import { 
   Book, 
   ChevronRight, 
-  Github, 
   Menu, 
   Moon, 
   Search, 
@@ -179,12 +178,6 @@ export function Header() {
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             </Button>
             
-            {/* GitHub link */}
-            <Button variant="outline" size="icon" asChild className="rounded-full hidden md:flex">
-              <a href="https://github.com/yourname/tailwind-master" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                <Github className="h-5 w-5" />
-              </a>
-            </Button>
             
             {/* Mobile menu */}
             <Sheet>
@@ -272,12 +265,6 @@ export function Header() {
                   )}
                   
                   <div className="mt-auto border-t border-border/40 pt-4">
-                    <Button asChild variant="outline" size="sm" className="w-full">
-                      <a href="https://github.com/yourname/tailwind-master" target="_blank" rel="noopener noreferrer">
-                        <Github className="h-4 w-4 mr-2" />
-                        GitHub
-                      </a>
-                    </Button>
                   </div>
                 </div>
               </SheetContent>

@@ -1,4 +1,4 @@
-// components/enhanced-playground.tsx - Fixed unused compiledCode variable
+// components/enhanced-playground.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -16,8 +16,11 @@ import {
   HelpCircle,
   LayoutGrid,
   Smartphone,
-  Tablet,
-  Laptop
+  Laptop,
+  Maximize2,
+  Minimize2,
+  ChevronsLeft,
+  ChevronsRight
 } from "lucide-react";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
@@ -32,7 +35,7 @@ interface PlaygroundProps {
   };
 }
 
-type DeviceView = "responsive" | "phone" | "tablet" | "laptop";
+type DeviceView = "responsive" | "phone" | "laptop";
 
 export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
   // State
@@ -44,11 +47,22 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
   const [activeTab, setActiveTab] = useState("html");
   const [deviceView, setDeviceView] = useState<DeviceView>("responsive");
   const [showGrid, setShowGrid] = useState(true);
+  const [fullScreenMode, setFullScreenMode] = useState<"code" | "preview" | null>(null);
   
-  // Combine HTML and CSS
+  // Combine HTML and CSS into a complete document
   function combineCode(html: string, css: string): string {
-    if (!css) return html;
-    return html.replace("</head>", `<style>${css}</style></head>`);
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com?v=4.0.0"></script>
+  <style>${css}</style>
+</head>
+<body>
+  ${html}
+</body>
+</html>`;
   }
   
   // Update preview when code changes
@@ -65,19 +79,7 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
 
   // Copy to clipboard
   const copyToClipboard = () => {
-    const fullCode = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?v=4.0.0"></script>
-  ${cssCode ? `<style>${cssCode}</style>` : ''}
-</head>
-<body>
-  ${htmlCode}
-</body>
-</html>`;
-
+    const fullCode = combineCode(htmlCode, cssCode);
     navigator.clipboard.writeText(fullCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -92,19 +94,7 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
   
   // Export as HTML file
   const downloadHTML = () => {
-    const fullCode = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?v=4.0.0"></script>
-  ${cssCode ? `<style>${cssCode}</style>` : ''}
-</head>
-<body>
-  ${htmlCode}
-</body>
-</html>`;
-    
+    const fullCode = combineCode(htmlCode, cssCode);
     const blob = new Blob([fullCode], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -114,6 +104,11 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  // Toggle full screen mode
+  const toggleFullScreen = (mode: "code" | "preview" | null) => {
+    setFullScreenMode(fullScreenMode === mode ? null : mode);
   };
 
   return (
@@ -191,17 +186,6 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
               )}
             >
               <Smartphone className="h-3.5 w-3.5" />
-            </ToggleGroupItem>
-            <ToggleGroupItem 
-              value="tablet" 
-              className={cn(
-                "h-7 w-7 rounded-sm",
-                deviceView === "tablet" 
-                  ? "bg-blue-600 text-white" 
-                  : "text-gray-400 hover:text-white hover:bg-gray-700"
-              )}
-            >
-              <Tablet className="h-3.5 w-3.5" />
             </ToggleGroupItem>
             <ToggleGroupItem 
               value="laptop" 
@@ -343,9 +327,39 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 flex-grow overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 flex-grow overflow-hidden relative">
         {/* Code Editor Panel */}
-        <div className="border-r border-gray-800 h-full flex flex-col">
+        <div 
+          className={cn(
+            "border-r border-gray-800 h-full flex flex-col transition-all duration-300 ease-in-out",
+            fullScreenMode === "code" ? "lg:col-span-2 z-10" : 
+            fullScreenMode === "preview" ? "lg:col-span-0 lg:hidden" : "lg:col-span-1"
+          )}
+        >
+          <div className="bg-gray-900 p-1 flex justify-end">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => toggleFullScreen("code")}
+              className="h-6 w-6 text-gray-400 hover:text-white hover:bg-gray-700 rounded-md"
+            >
+              {fullScreenMode === "code" ? (
+                <Minimize2 className="h-3.5 w-3.5" />
+              ) : (
+                <Maximize2 className="h-3.5 w-3.5" />
+              )}
+            </Button>
+            {fullScreenMode === "code" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => toggleFullScreen(null)}
+                className="h-6 w-6 ml-1 text-gray-400 hover:text-white hover:bg-gray-700 rounded-md"
+              >
+                <ChevronsRight className="h-3.5 w-3.5" />
+              </Button>
+            )}
+          </div>
           <div className="flex-grow overflow-hidden">
             {activeTab === "html" ? (
               <CodeEditor 
@@ -393,14 +407,43 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
         </div>
         
         {/* Live Preview Panel */}
-        <div className="h-full bg-gray-950 overflow-hidden">
+        <div 
+          className={cn(
+            "h-full bg-gray-950 overflow-hidden transition-all duration-300 ease-in-out",
+            fullScreenMode === "preview" ? "lg:col-span-2 z-10" : 
+            fullScreenMode === "code" ? "lg:col-span-0 lg:hidden" : "lg:col-span-1"
+          )}
+        >
+          <div className="bg-gray-900 p-1 flex justify-end">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => toggleFullScreen("preview")}
+              className="h-6 w-6 text-gray-400 hover:text-white hover:bg-gray-700 rounded-md"
+            >
+              {fullScreenMode === "preview" ? (
+                <Minimize2 className="h-3.5 w-3.5" />
+              ) : (
+                <Maximize2 className="h-3.5 w-3.5" />
+              )}
+            </Button>
+            {fullScreenMode === "preview" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => toggleFullScreen(null)}
+                className="h-6 w-6 ml-1 text-gray-400 hover:text-white hover:bg-gray-700 rounded-md"
+              >
+                <ChevronsLeft className="h-3.5 w-3.5" />
+              </Button>
+            )}
+          </div>
           <div className={cn(
-            "w-full h-full", 
+            "w-full h-[calc(100%-2rem)]", 
             deviceView !== "responsive" ? "flex items-center justify-center bg-gray-900/30" : ""
           )}>
             <div className={cn(
               deviceView === "phone" ? "w-[375px] h-[667px] shadow-xl mx-auto border border-gray-800 rounded-lg overflow-hidden" :
-              deviceView === "tablet" ? "w-[768px] h-[1024px] shadow-xl mx-auto scale-75 origin-center border border-gray-800 rounded-lg overflow-hidden" :
               deviceView === "laptop" ? "w-[1366px] h-[768px] shadow-xl mx-auto scale-[0.6] origin-center border border-gray-800 rounded-lg overflow-hidden" : 
               "w-full h-full"
             )}>

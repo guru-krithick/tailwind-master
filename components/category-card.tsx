@@ -24,7 +24,7 @@ interface CategoryCardProps {
   featured?: boolean; // Added the featured prop
 }
 
-export default function CategoryCard({ category, featured = false }: CategoryCardProps) {
+export default function CategoryCard({ category }: CategoryCardProps) {
   const icon = iconMap[category.icon] || <Layout className="h-5 w-5" />;
   
   return (

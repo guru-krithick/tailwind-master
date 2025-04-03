@@ -1,18 +1,17 @@
-// components/live-preview.tsx - Added cssCode prop
+// components/live-preview.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 
 interface LivePreviewProps {
   code: string;
-  cssCode?: string; // Added the cssCode prop
-  deviceView?: "responsive" | "phone" | "tablet" | "laptop";
+  cssCode?: string;
+  deviceView?: "responsive" | "phone" | "laptop";
   showGrid?: boolean;
 }
 
 export function LivePreview({ 
   code, 
-  cssCode,
   deviceView = "responsive",
   showGrid = true
 }: LivePreviewProps) {
@@ -35,12 +34,9 @@ export function LivePreview({
           throw new Error("Cannot access iframe document");
         }
 
-        // Prepare the content with Tailwind v4
-        const htmlContent = code;
-        
         // Use document.write for immediate rendering
         iframeDoc.open();
-        iframeDoc.write(htmlContent);
+        iframeDoc.write(code);
         iframeDoc.close();
         
         // Reset error state if successful

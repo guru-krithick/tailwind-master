@@ -1,3 +1,4 @@
+// components/live-preview.tsx - Fixed any type
 // components/live-preview.tsx
 "use client";
 
@@ -48,9 +49,10 @@ export function LivePreview({
         setTimeout(() => {
           setIsLoading(false);
         }, 300);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Preview error:", err);
-        setError(`Error rendering preview: ${err.message || String(err)}`);
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError(`Error rendering preview: ${errorMessage}`);
         setIsLoading(false);
       }
     };

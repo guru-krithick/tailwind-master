@@ -1,3 +1,4 @@
+// components/enhanced-playground.tsx - Fixed unused variable
 // components/enhanced-playground.tsx
 "use client";
 
@@ -38,7 +39,7 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
   // State
   const [htmlCode, setHtmlCode] = useState(initialCode.html);
   const [cssCode, setCssCode] = useState(initialCode.css);
-  const [previewCode, setPreviewCode] = useState(combineCode(initialCode.html, initialCode.css));
+  const [compiledCode, setCompiledCode] = useState(combineCode(initialCode.html, initialCode.css));
   const [copied, setCopied] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [activeTab, setActiveTab] = useState("html");
@@ -54,13 +55,13 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
   // Update preview when code changes
   useEffect(() => {
     if (autoRefresh) {
-      setPreviewCode(combineCode(htmlCode, cssCode));
+      setCompiledCode(combineCode(htmlCode, cssCode));
     }
   }, [htmlCode, cssCode, autoRefresh]);
   
   // Handle manual refresh
   const handleRefresh = () => {
-    setPreviewCode(combineCode(htmlCode, cssCode));
+    setCompiledCode(combineCode(htmlCode, cssCode));
   };
 
   // Copy to clipboard
@@ -87,7 +88,7 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
   const resetCode = () => {
     setHtmlCode(initialCode.html);
     setCssCode(initialCode.css);
-    setPreviewCode(combineCode(initialCode.html, initialCode.css));
+    setCompiledCode(combineCode(initialCode.html, initialCode.css));
   };
   
   // Export as HTML file

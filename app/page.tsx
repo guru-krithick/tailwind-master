@@ -1,3 +1,4 @@
+// app/page.tsx - Fixed line 178 with proper quote escaping
 // app/page.tsx
 "use client";
 
@@ -175,7 +176,7 @@ export default function Home() {
           
           {searchQuery !== "" && (
             <h2 className="text-2xl font-bold mb-6">
-              Search Results for "{searchQuery}"
+              Search Results for &quot;{searchQuery}&quot;
             </h2>
           )}
           

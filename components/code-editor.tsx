@@ -1,3 +1,4 @@
+// components/code-editor.tsx - Fixed any types
 // components/code-editor.tsx
 "use client";
 
@@ -153,7 +154,21 @@ interface CodeEditorProps {
   language?: string;
   theme?: string;
   height?: string;
-  options?: any;
+  options?: Record<string, unknown>;
+}
+
+interface MonacoModel {
+  getWordUntilPosition: (position: { lineNumber: number; column: number }) => {
+    startColumn: number;
+    endColumn: number;
+  };
+}
+
+interface CompletionItemRange {
+  startLineNumber: number;
+  endLineNumber: number;
+  startColumn: number;
+  endColumn: number;
 }
 
 export function CodeEditor({ 
@@ -177,9 +192,9 @@ export function CodeEditor({
     // Register Tailwind v4 completions
     if (language === 'html') {
       monaco.languages.registerCompletionItemProvider('html', {
-        provideCompletionItems: (model: { getWordUntilPosition: (arg0: any) => any; }, position: { lineNumber: any; }) => {
+        provideCompletionItems: (model: MonacoModel, position: { lineNumber: number }) => {
           const word = model.getWordUntilPosition(position);
-          const range = {
+          const range: CompletionItemRange = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
             startColumn: word.startColumn,
@@ -199,9 +214,9 @@ export function CodeEditor({
       });
     } else if (language === 'css') {
       monaco.languages.registerCompletionItemProvider('css', {
-        provideCompletionItems: (model: { getWordUntilPosition: (arg0: any) => any; }, position: { lineNumber: any; }) => {
+        provideCompletionItems: (model: MonacoModel, position: { lineNumber: number }) => {
           const word = model.getWordUntilPosition(position);
-          const range = {
+          const range: CompletionItemRange = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
             startColumn: word.startColumn,

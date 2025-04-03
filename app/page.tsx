@@ -8,7 +8,7 @@ import CategoryCard from "@/components/category-card";
 import { SearchBar } from "@/components/search-bar";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Code, Zap, Star, History } from "lucide-react";
+import { ArrowRight, BookOpen, Code, Star, History } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {

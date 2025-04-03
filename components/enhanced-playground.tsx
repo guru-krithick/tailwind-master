@@ -1,5 +1,4 @@
-// components/enhanced-playground.tsx - Fixed unused variable
-// components/enhanced-playground.tsx
+// components/enhanced-playground.tsx - Fixed unused compiledCode variable
 "use client";
 
 import { useState, useEffect } from "react";
@@ -406,18 +405,7 @@ export function EnhancedPlayground({ initialCode }: PlaygroundProps) {
               "w-full h-full"
             )}>
               <LivePreview 
-                code={`<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?v=4.0.0"></script>
-  <style>${cssCode}</style>
-</head>
-<body>
-  ${htmlCode}
-</body>
-</html>`} 
+                code={compiledCode}
                 deviceView={deviceView}
                 showGrid={showGrid}
               />
